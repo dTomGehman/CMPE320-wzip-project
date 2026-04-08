@@ -9,21 +9,21 @@ int main(int argc, char**argv) {
     }
 
     FILE *fp;
-    int last=-1, ch, ct=0;
+    int last = -1, ch, ct = 0;
 
-    for (int i=1; i<argc; i++){
+    for (int i = 1; i < argc; i++) {
         if (! (fp = fopen(argv[i], "r"))) {
             fprintf(stderr, "failed to open file\n");
             exit(1);
         }
-        ch=fgetc(fp);
-        if (last==-1) last=ch;
-        while (ch != EOF){
-            if (ch!=last){
+        ch = fgetc(fp);
+        if (last == -1) last = ch;
+        while (ch != EOF) {
+            if (ch != last) {
                 fwrite(&ct, sizeof(int), 1, stdout);
                 fputc(last, stdout);
-                last=ch;
-                ct=1;
+                last = ch;
+                ct = 1;
             } else {
                 ct++;
             }
