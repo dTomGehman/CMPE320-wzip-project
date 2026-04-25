@@ -84,6 +84,8 @@ rettype proc_file_threaded(FILE *fp, int last, int ct, long fsize) {
         last = r[i].ch; ct = r[i].ct;
     }
  
+    munmap(src, fsize);
+    for (int i = 0; i < 3; i++) free(r[i].buffer);
 
     rettype out;
     out.ch = last;

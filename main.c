@@ -23,11 +23,11 @@ int main(int argc, char**argv) {
         else{
             out = proc_file_threaded(fp, out.ch, out.ct, filestats.st_size);
         }
+        fclose(fp);
         
     }
     fwrite(&(out.ct), sizeof(int), 1, stdout);
     fputc(out.ch, stdout);
-            
     return 0;
 
 }
