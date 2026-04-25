@@ -151,6 +151,18 @@ rettype proc_file_threaded(FILE *fp, int last, int ct, long fsize){
     pthread_create(&p1, NULL, worker, (void*) &r1);
     pthread_join(p1, NULL);
 
+    char chedge=(char) r1.buffer[4];
+    if (chedge == last) { //continuous strain, combine
+        int iedge; 
+        memcpy(&iedge, r1.buffer, sizeof(int) );
+        iedge+=ct;
+        memcpy(r1.buffer, &iedge, sizeof(int) );
+    } else if (last != -1){ // two different strains
+        fwrite(&ct, sizeof(int), 1, stdout);
+        fputc(last, stdout);
+    }
+
+
     fwrite(r1.buffer, 1, r1.retlength, stdout);
     
     rettype out;
