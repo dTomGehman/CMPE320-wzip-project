@@ -125,7 +125,7 @@ rettype proc_file_threaded(FILE *fp, int last, int ct, long fsize){
     char*src = mmap(0, fsize, PROT_READ, MAP_PRIVATE, fileno(fp), 0);
     if (!src) printf("mmap fail\n");
 
-    /*rettype2 r1, r2, r3;
+    rettype2 r1, r2, r3;
     long mid1 = fsize/3;
     long mid2 = mid1 * 2;
     r1.startpos = 0;r2.startpos = mid1; r3.startpos=mid2;
@@ -140,8 +140,7 @@ rettype proc_file_threaded(FILE *fp, int last, int ct, long fsize){
     pthread_join(p1, NULL);
     pthread_join(p2, NULL);
     pthread_join(p3, NULL);
-   */
-
+/*
     rettype2 r1;
     r1.startpos = 0;
     r1.endpos = fsize;
@@ -150,7 +149,7 @@ rettype proc_file_threaded(FILE *fp, int last, int ct, long fsize){
     pthread_t p1;
     pthread_create(&p1, NULL, worker, (void*) &r1);
     pthread_join(p1, NULL);
-
+*/
     char chedge=(char) r1.buffer[4];
     if (chedge == last) { //continuous strain, combine
         int iedge; 
@@ -162,12 +161,44 @@ rettype proc_file_threaded(FILE *fp, int last, int ct, long fsize){
         fputc(last, stdout);
     }
 
-
     fwrite(r1.buffer, 1, r1.retlength, stdout);
+    last = r1.ch; ct = r1.ct;
     
+    chedge=(char) r2.buffer[4];
+    if (chedge == last) { //continuous strain, combine
+        int iedge; 
+        memcpy(&iedge, r2.buffer, sizeof(int) );
+        iedge+=ct;
+        memcpy(r2.buffer, &iedge, sizeof(int) );
+    } else if (last != -1){ // two different strains
+        fwrite(&ct, sizeof(int), 1, stdout);
+        fputc(last, stdout);
+    }
+
+    fwrite(r2.buffer, 1, r2.retlength, stdout);
+    last = r2.ch; ct = r2.ct;
+ 
+    chedge=(char) r3.buffer[4];
+    if (chedge == last) { //continuous strain, combine
+        int iedge; 
+        memcpy(&iedge, r3.buffer, sizeof(int) );
+        iedge+=ct;
+        memcpy(r3.buffer, &iedge, sizeof(int) );
+    } else if (last != -1){ // two different strains
+        fwrite(&ct, sizeof(int), 1, stdout);
+        fputc(last, stdout);
+    }
+
+    fwrite(r3.buffer, 1, r3.retlength, stdout);
+ 
+
+
+
+
+
     rettype out;
-    out.ch=r1.ch;
-    out.ct=r1.ct;
+    out.ch=r3.ch;
+    out.ct=r3.ct;
     return out;
 }
 
