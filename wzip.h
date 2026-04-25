@@ -19,8 +19,8 @@ typedef struct {
     long startpos;
     long endpos; //not inclusive
     long retlength;
-    uint8_t*buffer;
-    char*src;
+    uint8_t* buffer;
+    char* src;
 } rettype2;
 
 rettype proc_file(FILE *fp, int last, int ct);

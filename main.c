@@ -1,12 +1,13 @@
 #include "wzip.h"
+
 int main(int argc, char**argv) {
     if (argc < 2) {
         printf("wzip: file1 [file2 ...]\n");
         exit(1);
     }
     rettype out;
-    out.ch=-1;
-    out.ct=0;
+    out.ch = -1;
+    out.ct = 0;
     FILE *fp;
 
 
